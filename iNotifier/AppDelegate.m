@@ -120,8 +120,4 @@ static NSString *store[] = {
         }
     }
 }
-
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
-        contextInfo:(void *)contextInfo {
-}
 @end

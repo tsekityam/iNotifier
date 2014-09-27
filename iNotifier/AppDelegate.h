@@ -20,7 +20,6 @@
     BOOL available;
 }
 - (IBAction)refresh:(id)sender;
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
