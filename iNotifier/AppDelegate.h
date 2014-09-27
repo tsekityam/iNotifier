@@ -8,8 +8,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
-
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSTableViewDelegate, NSTableViewDataSource> {
+@private
+    __weak IBOutlet NSTextField *_textField_date;
+    __weak IBOutlet NSTextField *_textField_time;
+    __weak IBOutlet NSTableView *_tableView;
+    __weak IBOutlet NSButton *_button;
+    NSDictionary *_availability;
+    NSDictionary *_store;
+    NSTimer *timer;
+    BOOL available;
+}
+- (IBAction)refresh:(id)sender;
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 @end
 
