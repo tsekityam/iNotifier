@@ -69,12 +69,11 @@ static NSString *store[] = {
         NSTextField *textField = [tableView makeViewWithIdentifier:identifier owner:self];
         [textField setStringValue:model[row%18]];
         return textField;
-    } else if ([identifier isEqualToString:@"Quantity"]) {
-        if (_availability == nil) {
-            return nil;
-        }
+    } else if ([identifier isEqualToString:@"Availability"]) {
         NSTextField *textField = [tableView makeViewWithIdentifier:identifier owner:self];
-        [textField setStringValue:[[_availability objectForKey:store[row/18]] objectForKey:model[row%18]]];
+        if ([_availability objectForKey:store[row/18]] != nil) {
+            [textField setStringValue:[[_availability objectForKey:store[row/18]] objectForKey:model[row%18]]];
+        }
         return textField;
     } else {
         NSAssert1(NO, @"Unhandled table column identifier %@", identifier);
@@ -85,7 +84,7 @@ static NSString *store[] = {
 
 - (IBAction)refresh:(id)sender {
     timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refresh:) userInfo:nil repeats:YES];;
-    [_button setStringValue:@"start"];
+    [_button setStringValue:@"Refresh"];
     NSURLRequest *availabilityRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://reserve.cdn-apple.com/HK/zh_HK/reserve/iPhone/availability.json"]];
     NSData *avilablityRespond = [NSURLConnection sendSynchronousRequest:availabilityRequest returningResponse:nil error:nil];
     _availability = [NSJSONSerialization JSONObjectWithData:avilablityRespond options:0 error:nil];
@@ -94,10 +93,16 @@ static NSString *store[] = {
     NSData *storeRespond = [NSURLConnection sendSynchronousRequest:storeRequest returningResponse:nil error:nil];
     _store = [NSJSONSerialization JSONObjectWithData:storeRespond options:0 error:nil];
     
+    if ([_store objectForKey:@"updatedTime"] == nil) {
+        return;
+    }
+    
     available = NO;
-    for (int i = 0; i < 54; i++) {
-        if ([[[_availability objectForKey:store[i/18]] objectForKey:model[i%18]] boolValue]) {
-            available = YES;
+    for (int i = 0; i < sizeof(store); i++) {
+        for (int j = 0; j < sizeof(model); i++) {
+            if ([[[_availability objectForKey:store[i]] objectForKey:model[j]] boolValue]) {
+                available = YES;
+            }
         }
     }
     
